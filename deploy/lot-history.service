@@ -1,0 +1,18 @@
+# Один запуск збору: нові зміни зі стрічки, попередні аукціони кожного лота, потім таблиця для перевірки.
+# Встановлення: скопіюйте обидва файли в /etc/systemd/system/ і виконайте
+# `systemctl enable --now lot-history.timer`.
+[Unit]
+Description=Prozorro.Sale lot history: collect, link, export
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=lot-history
+WorkingDirectory=/opt/lot-history
+# AIRTABLE_TOKEN і AIRTABLE_BASE_ID лежать тут; файл читає лише root (chmod 600)
+EnvironmentFile=/etc/lot-history.env
+Environment=LOT_HISTORY_DB=/var/lib/lot-history/lots.sqlite3
+ExecStart=/opt/lot-history/.venv/bin/lot-history collect
+ExecStart=/opt/lot-history/.venv/bin/lot-history chains
+ExecStart=/opt/lot-history/.venv/bin/lot-history export --airtable --kind real_estate --kind land

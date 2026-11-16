@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the lot history collection every hour
+
+[Timer]
+OnCalendar=hourly
+# запуск, пропущений через вимкнений сервер, стартує після завантаження
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
